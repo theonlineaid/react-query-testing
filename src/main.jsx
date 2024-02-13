@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Home from './page/Home.jsx';
 import ProductDetails from './page/ProductDetails.jsx';
 import SearchQuery from './page/SearchQuery.jsx';
+import Post from './page/Post.jsx';
 
 
 const queryClient = new QueryClient()
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  }, 
+  
+  {
+    path: "/post",
+    element: <Post />,
   }, 
   
   {
