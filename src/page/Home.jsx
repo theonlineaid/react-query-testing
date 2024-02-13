@@ -6,7 +6,7 @@ import { Link, NavLink } from 'react-router-dom'
 export default function Home() {
     const { data, isLoading } = useQuery({
         queryKey: ['products'],
-        queryFn: dtatFetch
+        queryFn: ({signal}) => dtatFetch({signal})
     })
 
     // console.log(data)

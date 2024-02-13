@@ -1,5 +1,6 @@
-export const dtatFetch = async function () {
-    const res = await fetch(`https://dummyjson.com/products`)
+export const dtatFetch = async function ({signal}) {
+    console.log(signal)
+    const res = await fetch(`https://dummyjson.com/products`, {signal})
     const data = await res.json()
     return data.products
 }
