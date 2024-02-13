@@ -1,20 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { searchQuery } from '../fetch';
 import { useDebounce } from './useDebounce';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export default function SearchQuery() {
     const [query, setQuery] = useState('');
     const debouncedValue = useDebounce(query, 800);
     const navigate = useNavigate();
+    const location = useLocation();
+    const params = useParams();
 
-    const { data = [], isLoading } = useQuery({
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const queryParam = searchParams.get('query');
+        if (queryParam !== null) {
+            setQuery(queryParam);
+        }
+    }, [location.search]);
+
+
+    const { data = [], isLoading, refetch } = useQuery({
         queryKey: ['search', { mySearchTerm: debouncedValue }],
         queryFn: () => searchQuery(debouncedValue),
         enabled: !!debouncedValue,
-        staleTime: 1000 * 30,
+        // staleTime: 1000 * 30,
     })
+
+
+    // useEffect(() => {
+    //     // Trigger refetch when the component mounts or when the query parameter changes
+    //     refetch();
+    // });
 
     const handleSearch = (event) => {
         const newQuery = event.target.value;
