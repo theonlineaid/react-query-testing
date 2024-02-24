@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { dtatFetch } from '../fetch'
+import { dataFetch } from '../fetch'
 import { Link, NavLink } from 'react-router-dom'
 
 export default function Home() {
     const { data, isLoading } = useQuery({
         queryKey: ['products'],
-        queryFn: ({signal}) => dtatFetch({signal})
+        queryFn: ({ signal }) => dataFetch({ signal })
     })
 
     // console.log(data)

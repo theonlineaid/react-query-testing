@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { searchQuery } from '../fetch';
 import { useDebounce } from './useDebounce';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -25,13 +25,9 @@ export default function SearchQuery() {
         queryFn: () => searchQuery(debouncedValue),
         enabled: !!debouncedValue,
         // staleTime: 1000 * 30,
+        placeholderData: keepPreviousData,
     })
 
-
-    // useEffect(() => {
-    //     // Trigger refetch when the component mounts or when the query parameter changes
-    //     refetch();
-    // });
 
     const handleSearch = (event) => {
         const newQuery = event.target.value;
