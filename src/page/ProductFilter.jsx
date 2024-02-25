@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { getProductWithLimit, productCategory } from '../fetch';
 import { useSearchParams } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 
 export default function ProductFilter() {
 
@@ -8,6 +9,7 @@ export default function ProductFilter() {
 
     const limit = parseInt(searchParams.get('limit') || 4)
     const skip = parseInt(searchParams.get('skip') || 0)
+    const q = searchParams.get('q') || '';
 
     const { data: categories } = useQuery({
         queryKey: ['categories'],
@@ -16,9 +18,8 @@ export default function ProductFilter() {
 
 
     const { data: products } = useQuery({
-
-        queryKey: ['pagination', limit, skip],
-        queryFn: ({ signal }) => getProductWithLimit({ signal }, limit, skip),
+        queryKey: ['pagination', limit, skip, q],
+        queryFn: ({ signal }) => getProductWithLimit({ signal }, limit, skip, q),
         placeholderData: keepPreviousData,
     });
 
@@ -42,7 +43,14 @@ export default function ProductFilter() {
                     <div>
                         <div className="relative mt-2 rounded-md flex items-center gap-8 mb-4">
                             <input
-                                onChange={() => { }}
+                                onChange={debounce((e) => {
+                                    setSearchParams((prev) => {
+                                        prev.set('q', e.target.value)
+                                        prev.set('skip', 0)
+                                        return prev;
+                                    })
+                                }, 1000)}
+
                                 type="text"
                                 name="price"
                                 id="price"

@@ -6,9 +6,8 @@ export const dataFetch = async function ({ signal }) {
 }
 
 
-export const getProductWithLimit = async function ({ signal }, limit, skip) {
-    console.log(signal)
-    const res = await fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`, { signal })
+export const getProductWithLimit = async function ({ signal }, limit, skip, q) {
+    const res = await fetch(`https://dummyjson.com/products/search?limit=${limit}&skip=${skip}&q=${q}`, { signal })
     const data = await res.json()
     return data.products
 }
