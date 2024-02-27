@@ -11,6 +11,8 @@ export default function ProductFilter() {
     const skip = parseInt(searchParams.get('skip') || 0)
     const q = searchParams.get('q') || '';
 
+    const category = searchParams.get('category') || '';
+
     const { data: categories } = useQuery({
         queryKey: ['categories'],
         queryFn: () => productCategory()
@@ -27,7 +29,7 @@ export default function ProductFilter() {
         setSearchParams((prev) => {
             prev.set('skip', Math.max(skip + moving, 0))
             return prev; // it should return this way
-            // return prev.set('skip', Math.max(skip + moving, 0))
+            // return prev.set('skip', Math.max(skip + moving, 0)) // it will not working
         })
     }
 
@@ -103,18 +105,20 @@ export default function ProductFilter() {
 
                     <div className="flex gap-2 mt-12">
                         <button
+                            disabled={skip < limit}
                             className="bg-purple-500 px-4 py-1 text-white rounded"
                             onClick={() => handleNextPrevBoth(-limit)}>
                             Prev
                         </button>
                         <button
+                            disabled={limit + skip >= products?.total}
                             className="bg-purple-500 px-4 py-1 text-white rounded"
                             onClick={() => handleNextPrevBoth(limit)}>
                             Next
                         </button>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     );
 }
