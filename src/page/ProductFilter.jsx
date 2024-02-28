@@ -20,9 +20,23 @@ export default function ProductFilter() {
 
 
     const { data: products } = useQuery({
-        queryKey: ['pagination', limit, skip, q],
-        queryFn: ({ signal }) => getProductWithLimit({ signal }, limit, skip, q),
+        queryKey: ['pagination', limit, skip, q, category],
+
+
+        queryFn: async ({ signal }) => {
+            let url = `https://dummyjson.com/products/search?limit=${limit}&skip=${skip}&q=${q}`
+
+            if (category) {
+                url = `https://dummyjson.com/products/category/${category}?limit=${limit}&skip=${skip}`
+            }
+
+
+            return await fetch(url).then(res => res.json())
+            // return data.products
+            // getProductWithLimit({ signal }, limit, skip, q)
+        },
         placeholderData: keepPreviousData,
+        staleTime: 20000
     });
 
     const handleNextPrevBoth = (moving) => {
@@ -49,6 +63,7 @@ export default function ProductFilter() {
                                     setSearchParams((prev) => {
                                         prev.set('q', e.target.value)
                                         prev.set('skip', 0)
+                                        prev.delete('category')
                                         return prev;
                                     })
                                 }, 1000)}
@@ -59,7 +74,14 @@ export default function ProductFilter() {
                                 className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 placeholder="IPhone"
                             />
-                            <select className="border p-2" onChange={() => { }}>
+                            <select className="border p-2" onChange={(e) => {
+                                setSearchParams(prev => {
+                                    prev.set('skip', 0)
+                                    prev.delete('q')
+                                    prev.set('category', e.target.value)
+                                    return prev
+                                })
+                            }}>
                                 <option>Select category</option>
                                 {categories?.map((category) => (
                                     <option key={category} value={category}>
@@ -71,7 +93,7 @@ export default function ProductFilter() {
                     </div>
 
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                        {products?.map((product) => (
+                        {products?.products?.map((product) => (
                             <div key={product.id} className="group relative">
                                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-64">
                                     <img
